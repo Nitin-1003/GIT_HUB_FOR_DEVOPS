@@ -43,3 +43,24 @@ else
 fi
 
 log "========== Cleanup Completed =========="
+
+# Count total files before cleanup
+TOTAL_FILES=$(find "$TARGET_DIR" -type f | wc -l)
+log "Total files before cleanup: $TOTAL_FILES"
+
+# Show available disk space
+DISK_SPACE=$(df -h "$TARGET_DIR" | awk 'NR==2 {print $4}')
+log "Available disk space: $DISK_SPACE"
+
+# Count remaining files after cleanup
+REMAINING_FILES=$(find "$TARGET_DIR" -type f | wc -l)
+log "Remaining files after cleanup: $REMAINING_FILES"
+
+# Print the names of deleted files before deleting
+find "$TARGET_DIR" -type f -mtime +$RETENTION_DAYS -print -delete
+
+# Synchronize file system
+sync
+
+# Script completion message
+log "Cleanup completed successfully."
